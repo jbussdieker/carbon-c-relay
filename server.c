@@ -341,10 +341,13 @@ server_queuereader(void *d)
 				 * partially sent data is an error for us, since we use
 				 * blocking sockets, and hence partial sent is
 				 * indication of a failure */
-				if (self->ctype != CON_UDP)
+				if (self->ctype != CON_UDP) {
 					logerr("failed to write() to %s:%u: %s\n",
 							self->ip, self->port,
 							(slen < 0 ? strerror(errno) : "uncomplete write"));
+					logerr("failed to write() to %s:%u: %s\n",
+							self->ip, self->port, strerror(errno));
+        }
 				close(self->fd);
 				self->fd = -1;
 				self->failure += self->failure >= FAIL_WAIT_TIME ? 0 : 1;
